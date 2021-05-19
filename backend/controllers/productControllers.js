@@ -81,7 +81,7 @@ const getProducts = asyncHandler(async (req, res) => {
     : {}
 
   const count = await Product.count({ ...keyword })
-  const products = await Product.find({ ...keyword })
+  const products = await Product.find({ ...keyword }).limit(pageSize)
 
   res.json(products)
 })
