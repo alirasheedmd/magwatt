@@ -5,6 +5,7 @@ import { Row, Col } from "react-bootstrap"
 import { listProducts } from "../actions/productAction"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
+import Paginate from "../components/Paginate"
 
 const HomeScreen = ({ match }) => {
   const pageNumber = match.params.pageNumber || 1
@@ -12,11 +13,11 @@ const HomeScreen = ({ match }) => {
   const dispatch = useDispatch()
 
   const productList = useSelector((state) => state.productList)
-  const { loading, products, error } = productList
+  const { loading, products, pages, page, error } = productList
 
   useEffect(() => {
-    dispatch(listProducts(keyword)) // this will fireoff the productAction.js (listProduct that will fetch data)
-  }, [dispatch, keyword])
+    dispatch(listProducts(keyword, pageNumber)) // this will fireoff the productAction.js (listProduct that will fetch data)
+  }, [dispatch, keyword, pageNumber])
 
   return (
     <>
@@ -26,13 +27,20 @@ const HomeScreen = ({ match }) => {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <Row>
-          {products.map((product) => (
-            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-              <Product product={product} />
-            </Col>
-          ))}
-        </Row>
+        <>
+          <Row>
+            {products.map((product) => (
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
+          <Paginate
+            pages={pages}
+            page={page}
+            keyword={keyword ? keyword : ""}
+          />
+        </>
       )}
     </>
   )
