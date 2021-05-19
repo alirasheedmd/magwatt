@@ -68,6 +68,9 @@ const updateProduct = asyncHandler(async (req, res) => {
 //@access public
 
 const getProducts = asyncHandler(async (req, res) => {
+  const pageSize = 2
+  const page = Number(req.query.pageNumber) || 1
+
   const keyword = req.query.keyword
     ? {
         name: {
@@ -76,6 +79,8 @@ const getProducts = asyncHandler(async (req, res) => {
         },
       }
     : {}
+
+  const count = await Product.count({ ...keyword })
   const products = await Product.find({ ...keyword })
 
   res.json(products)
