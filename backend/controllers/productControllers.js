@@ -80,10 +80,12 @@ const getProducts = asyncHandler(async (req, res) => {
       }
     : {}
 
-  const count = await Product.count({ ...keyword })
-  const products = await Product.find({ ...keyword }).limit(pageSize)
+  const count = await Product.countDocuments({ ...keyword })
+  const products = await Product.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
 
-  res.json(products)
+  res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
 
 //@description Fetch a single product
