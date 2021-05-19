@@ -64,11 +64,19 @@ const updateProduct = asyncHandler(async (req, res) => {
 })
 
 //@description Fetch all products
-//@route GET /api/products
+//@route GET /api/products when you put question mark in the url it can be accessed with query
 //@access public
 
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({})
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword, // we are using regex becuase when some one type ip we need iphone to come up
+          $options: "i",
+        },
+      }
+    : {}
+  const products = await Product.find({ ...keyword })
 
   res.json(products)
 })

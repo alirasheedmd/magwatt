@@ -6,15 +6,16 @@ import { listProducts } from "../actions/productAction"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
+  const keyword = match.params.keyword
   const dispatch = useDispatch()
 
   const productList = useSelector((state) => state.productList)
   const { loading, products, error } = productList
 
   useEffect(() => {
-    dispatch(listProducts()) // this will fireoff the productAction.js (listProduct that will fetch data)
-  }, [dispatch])
+    dispatch(listProducts(keyword)) // this will fireoff the productAction.js (listProduct that will fetch data)
+  }, [dispatch, keyword])
 
   return (
     <>

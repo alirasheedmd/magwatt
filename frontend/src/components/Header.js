@@ -3,9 +3,8 @@ import { LinkContainer } from "react-router-bootstrap"
 import { Container, Navbar, Nav, NavDropdown, Form } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
 import { logout } from "../actions/userActions"
-import { useHistory } from "react-router-dom"
+import { useHistory, Route } from "react-router-dom"
 import SearchBar from "./searchBar"
-import Route from "react-router-dom"
 
 const Header = () => {
   const userLogin = useSelector((state) => state.userLogin)
