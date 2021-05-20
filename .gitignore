@@ -11,7 +11,7 @@ gitpush.sh
 /coverage
 
 # production
-/build
+/frontend/build
 
 # misc
 .DS_Store
