@@ -10,6 +10,7 @@ import {
 } from "../actions/productAction"
 import { addToCart } from "../actions/cartActions"
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productContants"
+import Meta from "../components/Meta"
 
 const ProductScreen = ({ history, match }) => {
   const productDetails = useSelector((state) => state.productDetails)
@@ -61,6 +62,7 @@ const ProductScreen = ({ history, match }) => {
         <h3>{error}</h3>
       ) : (
         <>
+          <Meta title={product.name} description={product.description} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
