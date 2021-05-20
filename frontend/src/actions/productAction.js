@@ -17,6 +17,9 @@ import {
   PRODUCT_CREATE_REVIEW_REQUEST,
   PRODUCT_CREATE_REVIEW_SUCCESS,
   PRODUCT_CREATE_REVIEW_FAIL,
+  PRODUCT_TOP_REQUEST,
+  PRODUCT_TOP_SUCCESS,
+  PRODUCT_TOP_FAIL,
 } from "../constants/productContants"
 import axios from "axios"
 import { logout } from "../actions/userActions"
@@ -194,6 +197,27 @@ export const createProductReview = (review, id) => async (
     dispatch({
       type: PRODUCT_CREATE_REVIEW_FAIL,
       payload: message,
+    })
+  }
+}
+
+export const listTopProducts = () => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_TOP_REQUEST }) //first the action will fire off the request reducer
+
+    const { data } = await axios.get(`/api/products/topratedproducts`)
+
+    dispatch({
+      type: PRODUCT_TOP_SUCCESS, // this will fill in the payload with the fetched product data.
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_TOP_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
     })
   }
 }
