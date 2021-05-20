@@ -44,7 +44,7 @@ const ProductScreen = ({ history, match }) => {
     dispatch(addToCart(product._id, qty))
     history.push("/cart")
   }
-  const review = { rating: 5, comment }
+  const review = { rating, comment }
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(createProductReview(review, match.params.id))
