@@ -53,6 +53,9 @@ h2 {
 }
 
 @media (max-width: 900px) {
+  #OrderNumber {
+    font-size: 20px;
+  }
   .carousel-caption h2 {
     font-size: 2.5vw;
   }

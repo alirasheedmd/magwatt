@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import axios from "axios"
 import { PayPalButton } from "react-paypal-button-v2"
 import { Link } from "react-router-dom"
 import { Col, Row, ListGroup, Image, Card, Button } from "react-bootstrap"
@@ -49,25 +48,39 @@ const OrderScreen = ({ match, history }) => {
     if (!userInfo) {
       history.push("/login")
     }
-    const addPaypalScript = async () => {
-      const script = document.createElement("script")
-      script.type = "text/javascript"
-      script.src = `https://www.paypal.com/sdk/js?client-id=AZ-UpfjafBihGkp0AQ29VofI0btcI5M8HBeBCi6gHI2zNrJOydXBncAdHnpKCeTDdMMfeRYzxrmFLRAf`
-      script.async = true
-      script.onload = () => {
-        setSdkReady({ loading: true, loaded: false })
+    if (!sdkReady.loaded && !sdkReady.loading) {
+      const addPaypalScript = () => {
+        const script = document.createElement("script")
+        script.type = "text/javascript"
+        script.src = `https://www.paypal.com/sdk/js?client-id=AZ-UpfjafBihGkp0AQ29VofI0btcI5M8HBeBCi6gHI2zNrJOydXBncAdHnpKCeTDdMMfeRYzxrmFLRAf`
+        script.async = true
+        script.onload = () => {
+          setSdkReady({ loading: true, loaded: false })
+        }
+        document.body.appendChild(script)
       }
-      document.body.appendChild(script)
-    }
-    if (!order || successPay || successDeliver || order._id !== orderId) {
-      dispatch({ type: ORDER_DELIVER_RESET })
-      dispatch({ type: ORDER_PAY_RESET })
-      dispatch(getOrderDetails(orderId))
       sdkReady.loading && addPaypalScript()
       setSdkReady({ loading: false, loaded: true })
     } else {
     }
-  }, [dispatch, orderId, successPay, order, successDeliver, sdkReady.loaded])
+
+    if (!order || successPay || successDeliver || order._id !== orderId) {
+      dispatch({ type: ORDER_DELIVER_RESET })
+      dispatch({ type: ORDER_PAY_RESET })
+      setSdkReady({ loading: false, loaded: false })
+      dispatch(getOrderDetails(orderId))
+    } else {
+    }
+  }, [
+    dispatch,
+    orderId,
+    successPay,
+    order,
+    successDeliver,
+    sdkReady.loaded,
+    userInfo,
+    history,
+  ])
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult))
@@ -85,11 +98,11 @@ const OrderScreen = ({ match, history }) => {
     <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <h1>Your order is {order._id}</h1>
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
+              <h5>Your order is {order._id}</h5>
               <h2>Shipping</h2>
               <p>
                 <strong>Name: {order.user.name}</strong>
