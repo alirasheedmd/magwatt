@@ -32,6 +32,9 @@ const OrderScreen = ({ match }) => {
   const orderDeliver = useSelector((state) => state.orderDeliver)
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   if (!loading) {
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2)
@@ -65,7 +68,7 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true)
       }
     }
-  }, [dispatch, orderId, successPay, order, successDeliver])
+  }, [dispatch, orderId, successPay, order, successDeliver, sdkReady])
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult))
@@ -199,12 +202,12 @@ const OrderScreen = ({ match }) => {
               )}
               {loadingDeliver ? (
                 <Loader />
+              ) : !order.isDelivered && userInfo.isAdmin ? (
+                <Button onClick={orderDeliverHandler} variant="light">
+                  Mark as delivered
+                </Button>
               ) : (
-                !order.isDelivered && (
-                  <Button onClick={orderDeliverHandler} variant="light">
-                    Mark as delivered
-                  </Button>
-                )
+                <></>
               )}
             </ListGroup>
           </Card>
