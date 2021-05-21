@@ -16,7 +16,7 @@ import {
   ORDER_PAY_RESET,
 } from "../constants/orderContants"
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
 
   const [sdkReady, setSdkReady] = useState(false)
@@ -46,12 +46,15 @@ const OrderScreen = ({ match }) => {
   }
 
   useEffect(() => {
+    if (!userInfo) {
+      history.push("/login")
+    }
     const addPaypalScript = async () => {
       const { data: clientId } = await axios.get("/api/config/paypal")
       const script = document.createElement("script")
       script.type = "text/javascript"
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
       script.async = true
-      script.src = `https://www.paypal.com/sdk/js?client-id=AZ-UpfjafBihGkp0AQ29VofI0btcI5M8HBeBCi6gHI2zNrJOydXBncAdHnpKCeTDdMMfeRYzxrmFLRAf`
       script.onload = () => {
         setSdkReady(true)
       }
@@ -61,12 +64,8 @@ const OrderScreen = ({ match }) => {
       dispatch({ type: ORDER_DELIVER_RESET })
       dispatch({ type: ORDER_PAY_RESET })
       dispatch(getOrderDetails(orderId))
-    } else if (!order.isPaid) {
-      if (!window.paypal) {
-        addPaypalScript()
-      } else {
-        setSdkReady(true)
-      }
+      addPaypalScript()
+    } else {
     }
   }, [dispatch, orderId, successPay, order, successDeliver])
 
