@@ -19,7 +19,7 @@ import {
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
 
-  const [sdkReady, setSdkReady] = useState(false)
+  const [sdkReady, setSdkReady] = useState({ loading: false, loaded: false })
 
   const dispatch = useDispatch()
 
@@ -55,7 +55,7 @@ const OrderScreen = ({ match, history }) => {
       script.src = `https://www.paypal.com/sdk/js?client-id=AZ-UpfjafBihGkp0AQ29VofI0btcI5M8HBeBCi6gHI2zNrJOydXBncAdHnpKCeTDdMMfeRYzxrmFLRAf`
       script.async = true
       script.onload = () => {
-        setSdkReady(true)
+        setSdkReady({ loading: true, loaded: false })
       }
       document.body.appendChild(script)
     }
@@ -63,10 +63,11 @@ const OrderScreen = ({ match, history }) => {
       dispatch({ type: ORDER_DELIVER_RESET })
       dispatch({ type: ORDER_PAY_RESET })
       dispatch(getOrderDetails(orderId))
-      addPaypalScript()
+      sdkReady.loading && addPaypalScript()
+      setSdkReady({ loading: false, loaded: true })
     } else {
     }
-  }, [dispatch, orderId, successPay, order, successDeliver])
+  }, [dispatch, orderId, successPay, order, successDeliver, sdkReady.loaded])
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult))
@@ -188,7 +189,7 @@ const OrderScreen = ({ match, history }) => {
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
-                  {!sdkReady ? (
+                  {!sdkReady.loaded ? (
                     <Loader />
                   ) : (
                     <PayPalButton
