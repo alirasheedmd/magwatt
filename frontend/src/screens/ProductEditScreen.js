@@ -54,17 +54,17 @@ const ProductEditScreen = ({ match, history }) => {
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
     const formData = new FormData()
-    formData.append("image", file)
+    formData.append("file", file)
+    formData.append("upload_preset", "q4ihwqxa")
     setUploading(true)
 
     try {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-      const { data } = await axios.post("/api/upload", formData, config)
-      setImage(data)
+      const { data } = await axios.post(
+        "https://api.cloudinary.com/v1_1/magwatt/image/upload",
+        formData
+      )
+      const { secure_url } = data
+      setImage(secure_url)
       setUploading(false)
     } catch (error) {
       console.error(error)
