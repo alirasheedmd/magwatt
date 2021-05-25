@@ -1,3 +1,8 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
 main {
   min-height: 80vh;
 }
@@ -31,21 +36,24 @@ h2 {
 #navbar .nav-link {
   color: #333;
 }
+
+#searchBox {
+  border-radius: 25px;
+  margin: auto;
+  border: 2px solid #ddd;
+}
 /* ================================================== */
 /* ======================Menu Bar==================== */
 /* ================================================== */
 
 #menu {
   background-color: #000;
+  height: 5vh;
 }
 
 #menu .menu-links {
-  margin: auto;
-}
-
-#searchBox {
-  border-radius: 25px;
-  width: 30vw;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .rating span {

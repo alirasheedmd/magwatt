@@ -80,7 +80,7 @@ const Header = () => {
         </Container>
       </Navbar>
       <Navbar id="menu" variant="dark">
-        <Nav className="menu-links">
+        <Nav className="menu-links" inline>
           {products.map((product) => (
             <Nav.Link href="">{product.category}</Nav.Link>
           ))}

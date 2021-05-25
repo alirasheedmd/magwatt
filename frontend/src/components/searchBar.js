@@ -1,8 +1,12 @@
+import Axios from "axios"
 import React, { useState } from "react"
 import { Form, Button } from "react-bootstrap"
+import { useDispatch } from "react-redux"
+import { listProducts } from "../actions/productAction"
 
 const SearchBar = ({ history }) => {
   const [keyword, setKeyword] = useState("")
+  const [timeOutId, setTimeOutId] = useState("")
   const submitHandler = (e) => {
     e.preventDefault()
     if (keyword.trim()) {
@@ -10,6 +14,12 @@ const SearchBar = ({ history }) => {
     } else {
       history.push(`/`)
     }
+  }
+
+  const dispatch = useDispatch()
+
+  const fetchProducts = async (keyword) => {
+    dispatch(listProducts(keyword))
   }
 
   return (
@@ -24,6 +34,15 @@ const SearchBar = ({ history }) => {
           placeholder="Search Products..."
           onChange={(e) => {
             setKeyword(e.target.value)
+
+            if (timeOutId) {
+              clearTimeout(timeOutId)
+            }
+            setTimeOutId(
+              setTimeout(() => {
+                fetchProducts(keyword)
+              }, 1000)
+            )
           }}
         />
       </Form.Group>
