@@ -16,6 +16,7 @@ const SearchBar = ({ history }) => {
     <Form inline onSubmit={submitHandler}>
       <Form.Group controlId="searchBox">
         <Form.Control
+          className="search"
           type="text"
           name="search"
           value={keyword}

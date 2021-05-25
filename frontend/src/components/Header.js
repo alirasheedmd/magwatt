@@ -1,17 +1,24 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { LinkContainer } from "react-router-bootstrap"
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap"
+import { Container, Navbar, Nav, NavDropdown, Image } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
 import { logout } from "../actions/userActions"
 import { useHistory, Route } from "react-router-dom"
 import SearchBar from "./searchBar"
+import { listProducts } from "../actions/productAction"
 
 const Header = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
+  const productList = useSelector((state) => state.productList)
+  const { products } = productList
   const history = useHistory()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(listProducts())
+  }, [dispatch])
   const logoutHandler = () => {
     dispatch(logout())
     history.push("/")
@@ -19,10 +26,16 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+      <Navbar variant="light" expand="lg" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand>Magwatt</Navbar.Brand>
+            <Navbar.Brand>
+              <Image
+                className="brand"
+                src="https://res.cloudinary.com/magwatt/image/upload/v1621681989/htnkhw49lsfpen1n0u19.png"
+                fluid
+              />
+            </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -65,6 +78,13 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Container>
+      </Navbar>
+      <Navbar id="menu" variant="dark">
+        <Nav className="menu-links">
+          {products.map((product) => (
+            <Nav.Link href="">{product.category}</Nav.Link>
+          ))}
+        </Nav>
       </Navbar>
     </header>
   )
