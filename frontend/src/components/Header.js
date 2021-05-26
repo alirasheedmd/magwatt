@@ -39,7 +39,11 @@ const Header = () => {
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Route render={({ history }) => <SearchBar history={history} />} />
+            <Route
+              render={({ history }) => (
+                <SearchBar className="search-bar" history={history} />
+              )}
+            />
             <Nav className="ml-auto">
               <LinkContainer to="/cart">
                 <Nav.Link>
