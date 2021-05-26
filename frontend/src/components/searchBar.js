@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { Link } from "react-router-dom"
 import { searchProducts } from "../actions/productAction"
 import { PRODUCT_SEARCH_RESET } from "../constants/productContants"
 
 const SearchBar = ({ history }) => {
   const [keyword, setKeyword] = useState("")
   const [timeOutId, setTimeOutId] = useState("")
+  const [visible, setVisible] = useState(true)
 
   const productSearch = useSelector((state) => state.productSearch)
   const { products } = productSearch
+
+  const menuRef = useRef()
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -22,11 +26,23 @@ const SearchBar = ({ history }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    const handler = (event) => {
+      if (!menuRef.current.contains(event.target)) {
+        setVisible(false)
+      }
+    }
+    document.addEventListener("mousedown", handler)
+
     if (keyword === "") {
+      setVisible(true)
       dispatch({ type: PRODUCT_SEARCH_RESET })
       clearTimeout(timeOutId)
     }
-  }, [dispatch, keyword, timeOutId])
+
+    return () => {
+      document.removeEventListener("mousedown", handler)
+    }
+  }, [dispatch, keyword, timeOutId, visible])
 
   const fetchProducts = (keyword) => {
     dispatch(searchProducts(keyword))
@@ -34,7 +50,7 @@ const SearchBar = ({ history }) => {
 
   return (
     <>
-      <form onSubmit={submitHandler}>
+      <form ref={menuRef} onSubmit={submitHandler}>
         <input
           className="searchBox"
           value={keyword}
@@ -48,7 +64,7 @@ const SearchBar = ({ history }) => {
             setTimeOutId(
               //this delay is called debounce as we call it after
               setTimeout(() => {
-                if (keyword) {
+                if (keyword && visible) {
                   fetchProducts(keyword)
                 } else {
                 }
@@ -59,20 +75,27 @@ const SearchBar = ({ history }) => {
         {!keyword ? (
           <></>
         ) : (
-          <div className="search-result">
-            <div className="match-list">
-              {products.map((product) => (
-                <div className="container">
-                  <img
-                    className="match-list-image"
-                    alt={`${product.name}`}
-                    src={`${product.image}`}
-                  />
-                  <p className="match-list-text">{product.name}</p>
-                </div>
-              ))}
+          visible && (
+            <div className="search-result">
+              <div className="match-list">
+                {products.map((product) => (
+                  <div className="container">
+                    <img
+                      className="match-list-image"
+                      alt={`${product.name}`}
+                      src={`${product.image}`}
+                    />
+                    <a
+                      className="match-list-text"
+                      href={`/product/${product._id}`}
+                    >
+                      {product.name}
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )
         )}
       </form>
     </>
