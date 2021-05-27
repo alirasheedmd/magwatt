@@ -15,7 +15,8 @@ const ProductEditScreen = ({ match, history }) => {
   const [description, setDescription] = useState("")
   const [price, setPrice] = useState(0)
   const [brand, setBrand] = useState("")
-  const [category, setCategory] = useState("")
+  const [mainCategory, setMainCategory] = useState("")
+  const [subCategory, setSubCategory] = useState("")
   const [countInStock, setCountInStock] = useState(0)
   const [image, setImage] = useState("")
   const [uploading, setUploading] = useState("")
@@ -44,7 +45,10 @@ const ProductEditScreen = ({ match, history }) => {
         setDescription(product.description)
         setPrice(product.price)
         setBrand(product.brand)
-        setCategory(product.category)
+        setMainCategory(
+          product.category.map((category) => category.mainCategory)
+        )
+        setSubCategory(product.category.map((category) => category.subCategory))
         setCountInStock(product.countInStock)
         setImage(product.image)
       }
@@ -78,7 +82,12 @@ const ProductEditScreen = ({ match, history }) => {
       description,
       price,
       brand,
-      category,
+      category: [
+        {
+          mainCategory,
+          subCategory,
+        },
+      ],
       countInStock,
       image,
     }
@@ -132,12 +141,20 @@ const ProductEditScreen = ({ match, history }) => {
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlid="category">
+            <Form.Group controlid="maincategory">
               <Form.Label>category</Form.Label>
               <Form.Control
                 type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                value={mainCategory}
+                onChange={(e) => setMainCategory(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group controlid="subcategory">
+              <Form.Label>sub Category</Form.Label>
+              <Form.Control
+                type="text"
+                value={subCategory}
+                onChange={(e) => setSubCategory(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group controlid="countInStock">

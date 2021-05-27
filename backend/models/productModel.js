@@ -16,6 +16,16 @@ const reviewSchema = mongoose.Schema(
   }
 )
 
+const categorySchema = mongoose.Schema(
+  {
+    mainCategory: { type: String, required: true },
+    subCategory: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+)
+
 const productSchema = mongoose.Schema(
   {
     user: {
@@ -35,10 +45,7 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-    },
+    category: [categorySchema],
     description: {
       type: String,
       required: true,
