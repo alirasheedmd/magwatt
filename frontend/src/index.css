@@ -87,12 +87,23 @@ h2 {
 
 #menu {
   background-color: #000;
-  height: 5vh;
+  height: 10vh;
+  position: relative;
 }
 
-#menu .menu-links {
-  margin: 0 auto;
-  padding: 0;
+#menu .main-category {
+  position: relative;
+  padding: 10px;
+  display: flex;
+}
+
+#menu .category {
+  position: absolute;
+  padding: 10px;
+  list-style: none;
+}
+#menu .main-category-li {
+  padding: 20px;
 }
 
 .rating span {
