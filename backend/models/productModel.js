@@ -16,10 +16,14 @@ const reviewSchema = mongoose.Schema(
   }
 )
 
-const categorySchema = mongoose.Schema(
+const skuSchema = mongoose.Schema(
   {
-    mainCategory: { type: String, required: true },
-    subCategory: { type: String, required: true },
+    sku: { type: String, required: true },
+    price: { type: String, required: true },
+    quantity: { type: String, require: true },
+    color: { type: String, require: true },
+    size: { type: String, require: true },
+    images: [{ type: String, require: true }],
   },
   {
     timestamps: true,
@@ -37,6 +41,15 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    idsku: {
+      type: String,
+      required: true,
+    },
+    skus: [skuSchema],
+    vendorProductID: {
+      type: String,
+      required: true,
+    },
     image: {
       type: String,
       required: true,
@@ -45,7 +58,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    category: [categorySchema],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Category",
+    },
     description: {
       type: String,
       required: true,
@@ -60,10 +77,6 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: true,
       default: 0,
-    },
-    price: {
-      type: Number,
-      required: true,
     },
     countInStock: {
       type: Number,

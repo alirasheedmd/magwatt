@@ -90,9 +90,6 @@ const Header = () => {
               <Nav.Link href="">
                 {product.category.map((category) => category.mainCategory)}
               </Nav.Link>
-              <Nav.Link href="">
-                {product.category.map((category) => category.subCategory)}
-              </Nav.Link>
             </>
           ))}
         </Nav>
