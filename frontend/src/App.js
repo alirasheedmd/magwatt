@@ -18,13 +18,15 @@ import UserEditScreen from "./screens/UserEditScreen"
 import ProductListScreen from "./screens/ProductListScreen"
 import ProductEditScreen from "./screens/ProductEditScreen"
 import OrderListScreen from "./screens/OrderListScreen"
+import Menu from "./components/Menu"
 
 const App = () => {
   return (
     <Router>
       <Header />
-      <main className="py-3">
-        <Container>
+      <Menu />
+      <main className="py-1">
+        <Container fluid id="fluid">
           <Route path="/login" component={LoginScreen} />
           <Route path="/register" component={RegisterScreen} exact />
           <Route path="/profile" component={ProfileScreen} />

@@ -1,59 +1,24 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { LinkContainer } from "react-router-bootstrap"
 import { Container, Navbar, Nav, NavDropdown, Image } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
 import { logout } from "../actions/userActions"
 import { useHistory, Route } from "react-router-dom"
 import SearchBar from "./searchBar"
-import { listCategories } from "../actions/categoryActions"
 
 const Header = () => {
-  const [display, setDisplay] = useState(false)
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
-  const categoryList = useSelector((state) => state.categoryList)
-  const { categories } = categoryList
   const history = useHistory()
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(listCategories()) // this will fireoff the categoryAction.js (listCategory that will fetch data)
-  }, [dispatch])
   const logoutHandler = () => {
     dispatch(logout())
     history.push("/")
   }
-
-  const renderCategories = (categories) => {
-    const mycategory = []
-    categories.map((category) =>
-      mycategory.push(
-        <li
-          onMouseEnter={openMenu}
-          onMouseLeave={closeMenu}
-          key={category.name}
-          className="main-category-li"
-        >
-          {category.name}
-          {display && category.children.length > 0 ? (
-            <ul className="category">{renderCategories(category.children)}</ul>
-          ) : null}
-        </li>
-      )
-    )
-    return mycategory
-  }
-  const openMenu = () => {
-    setDisplay(true)
-  }
-  const closeMenu = () => {
-    setDisplay(false)
-  }
-
   return (
     <header>
       <Navbar variant="light" expand="lg" collapseOnSelect>
-        <Container>
+        <Container fluid id="fluid">
           <LinkContainer to="/">
             <Navbar.Brand>
               <Image
@@ -109,9 +74,6 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <div id="menu">
-        <ul className="main-category">{renderCategories(categories)}</ul>
-      </div>
     </header>
   )
 }

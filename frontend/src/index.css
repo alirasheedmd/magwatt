@@ -85,67 +85,72 @@ h2 {
 /* ======================Menu Bar==================== */
 /* ================================================== */
 
-#menu {
+#menu-header {
   background-color: #000;
-  height: 10vh;
-  position: relative;
+  height: 8vh;
+  width: 100vw;
 }
 
-#menu .main-category {
-  position: relative;
-  padding: 10px;
-  display: flex;
-}
-
-#menu .category {
-  position: absolute;
-  padding: 10px;
+#menu-header ul {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
-#menu .main-category-li {
-  padding: 20px;
+
+#menu-header > ul {
+  display: flex;
+  margin: 0 50px;
+  position: relative;
+}
+
+#menu-header > ul > li > span {
+  display: block;
+  line-height: 8vh;
+  cursor: pointer;
+  padding: 0 20px;
+  font-size: 14px;
+}
+
+#menu-header > ul > li > span:hover {
+  color: #ddd;
+}
+
+#menu-header > ul > li > ul {
+  position: absolute;
+  background: white;
+  right: 0;
+  left: 0;
+  display: none;
+  border: 1px solid #cecece;
+}
+
+#menu-header > ul > li:hover ul {
+  display: block;
+}
+
+#menu-header > ul > li > ul > li {
+  margin: 0 20px;
+  float: left;
+}
+#menu-header > ul > li > ul > li > a {
+  font-weight: bold;
+  color: #000;
+}
+
+#menu-header > ul > li > ul > li a {
+  padding: 2px 0;
+  display: block;
+  text-decoration: none;
 }
 
 .rating span {
   margin: 0.1rem;
 }
 
-.carousel {
-  text-align: center;
-}
+/* ================================================== */
+/* ======================Products==================== */
+/* ================================================== */
 
-.carousel-item-next,
-.carousel-item-prev,
-.carousel-item.active {
-  display: flex;
-}
-.carousel-caption {
-  top: 0;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.carousel-caption h2 {
-  color: #fff;
-}
-
-.carousel img {
-  height: 300px;
-  padding: 40px;
-  margin: 40px;
-  border-radius: 50%;
-  margin-left: auto;
-  margin-right: auto;
-}
-.carousel a {
-  margin: 0 auto;
-}
-
-@media (max-width: 900px) {
-  #OrderNumber {
-    font-size: 20px;
-  }
-  .carousel-caption h2 {
-    font-size: 2.5vw;
-  }
+#fluid {
+  width: 92vw;
 }
