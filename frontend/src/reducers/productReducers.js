@@ -27,6 +27,10 @@ import {
   PRODUCT_SEARCH_SUCCESS,
   PRODUCT_SEARCH_FAIL,
   PRODUCT_SEARCH_RESET,
+  PRODUCT_CREATE_SKU_REQUEST,
+  PRODUCT_CREATE_SKU_SUCCESS,
+  PRODUCT_CREATE_SKU_FAIL,
+  PRODUCT_CREATE_SKU_RESET,
 } from "../constants/productContants"
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -66,7 +70,7 @@ export const productSearchReducer = (state = { products: [] }, action) => {
 }
 
 export const productDetailsReducer = (
-  state = { product: { reviews: [] } },
+  state = { product: { reviews: [], skus: [] } },
   action
 ) => {
   switch (action.type) {
@@ -150,6 +154,21 @@ export const productTopReducer = (state = { products: [] }, action) => {
       } // this will fetch the payload value from the productAction.js file.
     case PRODUCT_TOP_FAIL:
       return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const productSkuCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_CREATE_SKU_REQUEST:
+      return { loading: true }
+    case PRODUCT_CREATE_SKU_SUCCESS:
+      return { loading: false, success: true }
+    case PRODUCT_CREATE_SKU_FAIL:
+      return { loading: false, error: action.payload }
+    case PRODUCT_CREATE_SKU_RESET:
+      return {}
     default:
       return state
   }

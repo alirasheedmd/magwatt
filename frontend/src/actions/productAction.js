@@ -23,6 +23,9 @@ import {
   PRODUCT_SEARCH_REQUEST,
   PRODUCT_SEARCH_SUCCESS,
   PRODUCT_SEARCH_FAIL,
+  PRODUCT_CREATE_SKU_REQUEST,
+  PRODUCT_CREATE_SKU_SUCCESS,
+  PRODUCT_CREATE_SKU_FAIL,
 } from "../constants/productContants"
 import axios from "axios"
 import { logout } from "../actions/userActions"
@@ -188,6 +191,41 @@ export const updateProduct = (product, id) => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.resopnse.data.message
           : error.message,
+    })
+  }
+}
+
+export const createProductSku = (sku, id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_SKU_REQUEST }) //first the action will fire off the request reducer
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.post(`/api/products/${id}/sku`, sku, config)
+
+    dispatch({
+      type: PRODUCT_CREATE_SKU_SUCCESS,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_CREATE_SKU_FAIL,
+      payload: message,
     })
   }
 }

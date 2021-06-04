@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Form, Button } from "react-bootstrap"
+import { Form, Button, Table, Row, Col } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
-import { listProductDetails, updateProduct } from "../actions/productAction"
+import { LinkContainer } from "react-router-bootstrap"
+import {
+  listProductDetails,
+  listProducts,
+  updateProduct,
+} from "../actions/productAction"
 import { PRODUCT_UPDATE_RESET } from "../constants/productContants"
 import axios from "axios"
 
@@ -15,11 +20,10 @@ const ProductEditScreen = ({ match, history }) => {
   const [description, setDescription] = useState("")
   const [price, setPrice] = useState(0)
   const [brand, setBrand] = useState("")
-  const [mainCategory, setMainCategory] = useState("")
-  const [subCategory, setSubCategory] = useState("")
-  const [countInStock, setCountInStock] = useState(0)
+  const [category, setCategory] = useState("")
   const [image, setImage] = useState("")
   const [uploading, setUploading] = useState("")
+  const [countInStock, setCountInStock] = useState("")
 
   const dispatch = useDispatch()
 
@@ -45,11 +49,7 @@ const ProductEditScreen = ({ match, history }) => {
         setDescription(product.description)
         setPrice(product.price)
         setBrand(product.brand)
-        setMainCategory(
-          product.category.map((category) => category.mainCategory)
-        )
-        setSubCategory(product.category.map((category) => category.subCategory))
-        setCountInStock(product.countInStock)
+        setCategory(product.category)
         setImage(product.image)
       }
     }
@@ -82,16 +82,15 @@ const ProductEditScreen = ({ match, history }) => {
       description,
       price,
       brand,
-      category: [
-        {
-          mainCategory,
-          subCategory,
-        },
-      ],
+      category,
       countInStock,
       image,
     }
     dispatch(updateProduct(updatedProduct, productId))
+  }
+
+  const createSkuHandler = () => {
+    console.log("createSku")
   }
 
   return (
@@ -141,28 +140,12 @@ const ProductEditScreen = ({ match, history }) => {
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlid="maincategory">
-              <Form.Label>category</Form.Label>
+            <Form.Group controlid="category">
+              <Form.Label>Category</Form.Label>
               <Form.Control
                 type="text"
-                value={mainCategory}
-                onChange={(e) => setMainCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlid="subcategory">
-              <Form.Label>sub Category</Form.Label>
-              <Form.Control
-                type="text"
-                value={subCategory}
-                onChange={(e) => setSubCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlid="countInStock">
-              <Form.Label>Stock</Form.Label>
-              <Form.Control
-                type="number"
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group controlid="image">
@@ -186,6 +169,62 @@ const ProductEditScreen = ({ match, history }) => {
           </Form>
         )}
       </FormContainer>
+      <Row className="align-items-center">
+        <Col>
+          <h1>SKUs</h1>
+        </Col>
+        <Col className="text-right">
+          <Button className="my-3" onClick={createSkuHandler}>
+            <i className="fas fa-plus"></i> Create SKU
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        {product.skus.length === 0 ? (
+          <Message variant="primary">No SKUs</Message>
+        ) : (
+          <>
+            <Table bordered hover responsive className="table-sm">
+              <thead>
+                <tr>
+                  <th>SKU ID</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Color</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {product.skus.map((sku) => (
+                  <tr key={sku._id}>
+                    <td>{sku._id}</td>
+                    <td>{sku.name}</td>
+                    <td>${sku.price}</td>
+                    <td>{sku.quantity}</td>
+                    <td>{sku.color}</td>
+                    <td>{sku.size}</td>
+                    <td>
+                      <LinkContainer to={``}>
+                        <Button variant="light" className="btn-sm">
+                          <i className="fas fa-edit"></i>
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        // onClick={() => deleteSkuHandlerHandler(sku._id)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </>
+        )}
+      </Row>
     </>
   )
 }

@@ -18,9 +18,10 @@ const reviewSchema = mongoose.Schema(
 
 const skuSchema = mongoose.Schema(
   {
-    sku: { type: String, required: true },
-    price: { type: String, required: true },
-    quantity: { type: String, require: true },
+    name: { type: String, required: true },
+    skuId: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, require: true },
     color: { type: String, require: true },
     size: { type: String, require: true },
     images: [{ type: String, require: true }],
@@ -41,15 +42,7 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    idsku: {
-      type: String,
-      required: true,
-    },
     skus: [skuSchema],
-    vendorProductID: {
-      type: String,
-      required: true,
-    },
     image: {
       type: String,
       required: true,
@@ -74,6 +67,11 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     numReviews: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    numSkus: {
       type: Number,
       required: true,
       default: 0,
