@@ -210,7 +210,7 @@ export const createProductSku = (sku, id) => async (dispatch, getState) => {
       },
     }
 
-    await axios.post(`/api/products/${id}/sku`, sku, config)
+    await axios.post(`/api/products/${id}/skus`, sku, config)
 
     dispatch({
       type: PRODUCT_CREATE_SKU_SUCCESS,

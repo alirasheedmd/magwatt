@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Form, Button, Table, Row, Col } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
-import { LinkContainer } from "react-router-bootstrap"
-import {
-  listProductDetails,
-  listProducts,
-  updateProduct,
-} from "../actions/productAction"
+
+import { listProductDetails, updateProduct } from "../actions/productAction"
 import { PRODUCT_UPDATE_RESET } from "../constants/productContants"
 import axios from "axios"
+import Sku from "../components/Sku"
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState("")
   const [brand, setBrand] = useState("")
   const [category, setCategory] = useState("")
   const [image, setImage] = useState("")
   const [uploading, setUploading] = useState("")
-  const [countInStock, setCountInStock] = useState("")
 
   const dispatch = useDispatch()
 
@@ -75,6 +71,8 @@ const ProductEditScreen = ({ match, history }) => {
       setUploading(false)
     }
   }
+
+  const numSkus = Number(product.skus.length)
   const submitHandler = (e) => {
     e.preventDefault()
     const updatedProduct = {
@@ -83,14 +81,10 @@ const ProductEditScreen = ({ match, history }) => {
       price,
       brand,
       category,
-      countInStock,
       image,
+      numSkus,
     }
     dispatch(updateProduct(updatedProduct, productId))
-  }
-
-  const createSkuHandler = () => {
-    console.log("createSku")
   }
 
   return (
@@ -169,62 +163,7 @@ const ProductEditScreen = ({ match, history }) => {
           </Form>
         )}
       </FormContainer>
-      <Row className="align-items-center">
-        <Col>
-          <h1>SKUs</h1>
-        </Col>
-        <Col className="text-right">
-          <Button className="my-3" onClick={createSkuHandler}>
-            <i className="fas fa-plus"></i> Create SKU
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        {product.skus.length === 0 ? (
-          <Message variant="primary">No SKUs</Message>
-        ) : (
-          <>
-            <Table bordered hover responsive className="table-sm">
-              <thead>
-                <tr>
-                  <th>SKU ID</th>
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                </tr>
-              </thead>
-              <tbody>
-                {product.skus.map((sku) => (
-                  <tr key={sku._id}>
-                    <td>{sku._id}</td>
-                    <td>{sku.name}</td>
-                    <td>${sku.price}</td>
-                    <td>{sku.quantity}</td>
-                    <td>{sku.color}</td>
-                    <td>{sku.size}</td>
-                    <td>
-                      <LinkContainer to={``}>
-                        <Button variant="light" className="btn-sm">
-                          <i className="fas fa-edit"></i>
-                        </Button>
-                      </LinkContainer>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        // onClick={() => deleteSkuHandlerHandler(sku._id)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </>
-        )}
-      </Row>
+      <Sku product={product} productId={productId} />
     </>
   )
 }

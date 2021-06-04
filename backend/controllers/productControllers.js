@@ -26,7 +26,6 @@ const createProduct = asyncHandler(async (req, res) => {
     price,
     image,
     description,
-    countInStock,
     rating,
     numReviews,
     skus: [],
@@ -42,7 +41,7 @@ const createProduct = asyncHandler(async (req, res) => {
 //@access private/ admin
 
 const createSku = asyncHandler(async (req, res) => {
-  const { name, skuId, price, quantity, color, size, images } = req.body
+  const { name, skuId, price, countInStock, color, size, images } = req.body
 
   const product = await Product.findById(req.params.id)
 
@@ -60,7 +59,7 @@ const createSku = asyncHandler(async (req, res) => {
       skuId,
       name,
       price,
-      quantity,
+      countInStock,
       color,
       size,
       images,
@@ -92,9 +91,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.price = req.body.price || product.price
     product.image = req.body.image || product.image
     product.description = req.body.description || product.description
-    product.countInStock = req.body.countInStock || product.countInStock
     product.rating = req.body.rating || product.rating
     product.numReviews = req.body.numReviews || product.numReviews
+    product.numSkus = req.body.numSkus || product.numSkus
 
     const updatedProduct = await product.save() // after we save user in database it will return the updateduser so we will save it to a variable.
 

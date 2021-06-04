@@ -45,6 +45,7 @@ const ProductListScreen = ({ history, match }) => {
     price: 0,
     countInStock: 0,
     rating: 0,
+    numSkus: 0,
   }
 
   useEffect(() => {

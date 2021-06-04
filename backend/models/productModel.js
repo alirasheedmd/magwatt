@@ -21,7 +21,7 @@ const skuSchema = mongoose.Schema(
     name: { type: String, required: true },
     skuId: { type: String, required: true },
     price: { type: Number, required: true },
-    quantity: { type: Number, require: true },
+    countInStock: { type: Number, require: true },
     color: { type: String, require: true },
     size: { type: String, require: true },
     images: [{ type: String, require: true }],
@@ -40,6 +40,10 @@ const productSchema = mongoose.Schema(
     },
     name: {
       type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
       required: true,
     },
     skus: [skuSchema],
