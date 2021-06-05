@@ -9,12 +9,16 @@ import {
   createReview,
   getTopProducts,
   createSku,
+  deleteSku,
 } from "../controllers/productControllers.js"
 import { admin, protect } from "../middleware/authMiddleware.js"
 
 router.route("/").get(getProducts).post(protect, admin, createProduct)
 router.route("/:id/review").post(protect, createReview)
-router.route("/:id/skus").post(protect, admin, createSku)
+router
+  .route("/:id/skus")
+  .post(protect, admin, createSku)
+  .delete(protect, admin, deleteSku)
 router.route("/topratedproducts").get(getTopProducts)
 router
   .route("/:id")

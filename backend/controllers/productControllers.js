@@ -36,47 +36,6 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 })
 
-//@description Create SKU
-//@route POST /api/products/:id/sku
-//@access private/ admin
-
-const createSku = asyncHandler(async (req, res) => {
-  const { name, skuId, price, countInStock, color, size, images } = req.body
-
-  const product = await Product.findById(req.params.id)
-
-  if (product) {
-    //We will check if the user has already given review.
-    const alreadyExisitSku = product.skus.find(
-      (r) => r.skuId.toString() === skuId.toString()
-    )
-    if (alreadyExisitSku) {
-      res.status(404)
-      throw new Error("SKU already Added")
-    }
-
-    const sku = {
-      skuId,
-      name,
-      price,
-      countInStock,
-      color,
-      size,
-      images,
-    }
-    //Now we will push the object we created in the reviews array of the product that we crated
-    product.skus.push(sku) //
-
-    product.numSkus = product.skus.length
-
-    await product.save()
-    res.status(201).json({ message: "SKU Added" })
-  } else {
-    res.status(404)
-    throw new Error("Cannot Create SKU")
-  }
-})
-
 //@description Update Product
 //@route put /api/products
 //@access private admin
@@ -152,9 +111,9 @@ const getProductById = asyncHandler(async (req, res) => {
 //@access private/ admin
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
+  const product = await Product.find(req.params.id)
   if (product) {
-    await product.remove()
+    await product.save()
     res.json({ message: "Product Removed" })
   } else {
     res.status(404)
@@ -212,6 +171,66 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.json(products)
 })
 
+//@description Create SKU
+//@route POST /api/products/:id/sku
+//@access private/ admin
+
+const createSku = asyncHandler(async (req, res) => {
+  const { name, skuId, price, countInStock, color, size, images } = req.body
+
+  const product = await Product.findById(req.params.id)
+
+  if (product) {
+    //We will check if the user has already given review.
+    const alreadyExisitSku = product.skus.find(
+      (r) => r.skuId.toString() === skuId.toString()
+    )
+    if (alreadyExisitSku) {
+      res.status(404)
+      throw new Error("SKU already Added")
+    }
+
+    const sku = {
+      skuId,
+      name,
+      price,
+      countInStock,
+      color,
+      size,
+      images,
+    }
+    //Now we will push the object we created in the reviews array of the product that we crated
+    product.skus.push(sku) //
+
+    product.numSkus = product.skus.length
+
+    await product.save()
+    res.status(201).json({ message: "SKU Added" })
+  } else {
+    res.status(404)
+    throw new Error("Cannot Create SKU")
+  }
+})
+
+//@description Delete SKU
+//@route POST /api/products/:id/sku
+//@access private/ admin
+
+const deleteSku = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id)
+  const skuId = req.body.skuId
+
+  if (product) {
+    const updatedSkus = product.skus.filter((sku) => sku._id != skuId)
+    product.skus = updatedSkus
+    await product.save()
+    res.json({ message: "SKU Removed" })
+  } else {
+    res.status(404)
+    throw new Error("Product not found")
+  }
+})
+
 export {
   getProducts,
   getProductById,
@@ -221,4 +240,5 @@ export {
   createReview,
   getTopProducts,
   createSku,
+  deleteSku,
 }
