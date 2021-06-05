@@ -123,6 +123,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
   const count = await Product.countDocuments({ ...keyword })
   const products = await Product.find({ ...keyword })
+    .populate("category", "name")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
@@ -134,7 +135,10 @@ const getProducts = asyncHandler(async (req, res) => {
 //@access public
 
 const getProductById = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
+  const product = await Product.findById(req.params.id).populate(
+    "category",
+    "name"
+  )
   if (product) {
     res.json(product)
   } else {

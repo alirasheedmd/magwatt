@@ -25,8 +25,8 @@ const Sku = ({ product, productId }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_SKU_RESET })
     if (success) {
+      dispatch({ type: PRODUCT_CREATE_SKU_RESET })
       dispatch(listProductDetails(productId))
       setCreateSkuForm(false)
     }

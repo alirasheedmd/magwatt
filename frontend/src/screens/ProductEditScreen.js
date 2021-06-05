@@ -45,7 +45,7 @@ const ProductEditScreen = ({ match, history }) => {
         setDescription(product.description)
         setPrice(product.price)
         setBrand(product.brand)
-        setCategory(product.category)
+        setCategory(product.category.name)
         setImage(product.image)
       }
     }

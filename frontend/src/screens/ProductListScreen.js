@@ -24,53 +24,19 @@ const ProductListScreen = ({ history, match }) => {
     error: errorDelete,
   } = productDelete
 
+  const dispatch = useDispatch()
+
   const productList = useSelector((state) => state.productList)
   const { loading, error, products, page, pages } = productList
-
-  const productCreate = useSelector((state) => state.productCreate)
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    product: createdProduct,
-    success: successCreate,
-  } = productCreate
-
-  const dispatch = useDispatch()
-  const newProduct = {
-    name: "Sample Product",
-    image: "/images/playstation.jpg",
-    description: "Sample Description",
-    brand: "Sample Brand",
-    category: "60b5fd39269ea5777209fd8f",
-    price: 0,
-    countInStock: 0,
-    rating: 0,
-    numSkus: 0,
-  }
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
     if (!userInfo.isAdmin) {
       history.push("/login")
-    }
-    if (successCreate) {
-      history.push(`/admin/products/${createdProduct._id}/edit`)
     } else {
       dispatch(listProducts("", pageNumber))
     }
-  }, [
-    dispatch,
-    history,
-    userInfo,
-    successCreate,
-    successDelete,
-    createdProduct,
-    pageNumber,
-  ])
-
-  const createProductHandler = () => {
-    dispatch(createProduct(newProduct))
-  }
+  }, [dispatch, history, userInfo, successDelete, pageNumber])
 
   const deleteProductHandler = (id) => {
     if (window.confirm("Are you sure?")) {
@@ -85,16 +51,15 @@ const ProductListScreen = ({ history, match }) => {
           <h1>Products</h1>
         </Col>
         <Col className="text-right">
-          <Button className="my-3" onClick={createProductHandler}>
-            <i className="fas fa-plus"></i> Create Product
-          </Button>
+          <LinkContainer to={`/admin/product/create`}>
+            <Button variant="primary">Create Product</Button>
+          </LinkContainer>
         </Col>
       </Row>
       {error && <Message variant="danger">{error}</Message>}
 
-      {errorCreate && <Message variant="danger">{errorCreate}</Message>}
       {errorDelete && <Message variant="danger">{errorDelete}</Message>}
-      {loading || loadingCreate || loadingDelete ? (
+      {loading || loadingDelete ? (
         <Loader />
       ) : (
         <>
@@ -106,6 +71,7 @@ const ProductListScreen = ({ history, match }) => {
                 <th>Price</th>
                 <th>Catagory</th>
                 <th>Brand</th>
+                <th>SKUs</th>
                 <th></th>
               </tr>
             </thead>
@@ -115,8 +81,9 @@ const ProductListScreen = ({ history, match }) => {
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>${product.price}</td>
-                  <td>{product.category}</td>
+                  <td>{product.category.name}</td>
                   <td>{product.brand}</td>
+                  <td>{product.numSkus}</td>
                   <td>
                     <LinkContainer to={`/admin/products/${product._id}/edit`}>
                       <Button variant="light" className="btn-sm">
