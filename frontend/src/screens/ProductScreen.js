@@ -17,16 +17,16 @@ const ProductScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
 
   const productReviewCreate = useSelector((state) => state.productReviewCreate)
-  const {
-    error: errorReviewCreate,
-    success: successReviewCreate,
-  } = productReviewCreate
+  const { error: errorReviewCreate, success: successReviewCreate } =
+    productReviewCreate
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [qty, setQty] = useState(1)
   const [comment, setComment] = useState("")
   const [rating, setRating] = useState(0)
+  const [color, setColor] = useState("")
+  const [size, setSize] = useState("")
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -50,6 +50,12 @@ const ProductScreen = ({ history, match }) => {
     e.preventDefault()
     dispatch(createProductReview(review, match.params.id))
   }
+
+  const uniqueColor = [...new Set(product.skus.map((sku) => sku.color))] // [ 'A', 'B']
+
+  const uniqueColorSize = product.skus.filter((sku) => sku.color === color)
+
+  console.log(uniqueColorSize)
 
   return (
     <>
@@ -82,6 +88,24 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item>
                   Description: {product.description}
                 </ListGroup.Item>
+                <ListGroup.Item>Options:</ListGroup.Item>
+                <Col>Select Color</Col>
+                <Form>
+                  <Form.Group controlId="category">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => setColor(e.target.value)}
+                    >
+                      <option>Select Color</option>
+                      {uniqueColor.map((color) => (
+                        <option key={color} value={color}>
+                          {color}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                </Form>
               </ListGroup>
             </Col>
             <Col md={3}>
