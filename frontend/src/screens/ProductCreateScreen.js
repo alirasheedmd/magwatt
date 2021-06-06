@@ -124,7 +124,7 @@ const ProductCreateScreen = ({ match, history }) => {
               onChange={(e) => setBrand(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group controlId="rating">
+          <Form.Group controlId="category">
             <Form.Label>Category</Form.Label>
             <Form.Control
               as="select"

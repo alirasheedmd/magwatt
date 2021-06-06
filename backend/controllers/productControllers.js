@@ -15,7 +15,6 @@ const createProduct = asyncHandler(async (req, res) => {
     description,
     rating,
     numReviews,
-    countInStock,
   } = req.body
 
   const product = new Product({
@@ -111,9 +110,9 @@ const getProductById = asyncHandler(async (req, res) => {
 //@access private/ admin
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.find(req.params.id)
+  const product = await Product.findById(req.params.id)
   if (product) {
-    await product.save()
+    await product.remove()
     res.json({ message: "Product Removed" })
   } else {
     res.status(404)
@@ -218,8 +217,7 @@ const createSku = asyncHandler(async (req, res) => {
 
 const deleteSku = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
-  const skuId = req.body.skuId
-
+  const skuId = req.query.sku
   if (product) {
     const updatedSkus = product.skus.filter((sku) => sku._id != skuId)
     product.skus = updatedSkus

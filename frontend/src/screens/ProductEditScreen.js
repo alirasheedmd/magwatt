@@ -10,6 +10,7 @@ import { listProductDetails, updateProduct } from "../actions/productAction"
 import { PRODUCT_UPDATE_RESET } from "../constants/productContants"
 import axios from "axios"
 import Sku from "../components/Sku"
+import { listCategories } from "../actions/categoryActions"
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id
@@ -33,6 +34,9 @@ const ProductEditScreen = ({ match, history }) => {
     success: successUpdate,
   } = productUpdate
 
+  const categoryList = useSelector((state) => state.categoryList)
+  const { categories } = categoryList
+
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET })
@@ -40,6 +44,7 @@ const ProductEditScreen = ({ match, history }) => {
     } else {
       if (!product.name || productId !== product._id) {
         dispatch(listProductDetails(productId))
+        dispatch(listCategories())
       } else {
         setName(product.name)
         setDescription(product.description)
@@ -85,6 +90,16 @@ const ProductEditScreen = ({ match, history }) => {
       numSkus,
     }
     dispatch(updateProduct(updatedProduct, productId))
+  }
+
+  const createCategoryList = (categories, options = []) => {
+    for (let category of categories) {
+      options.push({ value: category._id, name: category.name })
+      if (category.children.length > 0) {
+        createCategoryList(category.children, options)
+      }
+    }
+    return options
   }
 
   return (
@@ -134,13 +149,19 @@ const ProductEditScreen = ({ match, history }) => {
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlid="category">
+            <Form.Group controlId="category">
               <Form.Label>Category</Form.Label>
               <Form.Control
-                type="text"
-                value={category}
+                as="select"
+                value="Watches"
                 onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
+              >
+                {createCategoryList(categories).map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.name}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <Form.Group controlid="image">
               <Form.Label>Image</Form.Label>

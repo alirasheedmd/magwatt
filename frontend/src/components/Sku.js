@@ -5,7 +5,11 @@ import { LinkContainer } from "react-router-bootstrap"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
-import { createProductSku, listProductDetails } from "../actions/productAction"
+import {
+  createProductSku,
+  deleteSku,
+  listProductDetails,
+} from "../actions/productAction"
 import axios from "axios"
 import { PRODUCT_CREATE_SKU_RESET } from "../constants/productContants"
 
@@ -21,16 +25,22 @@ const Sku = ({ product, productId }) => {
   const [createSkuForm, setCreateSkuForm] = useState(false)
 
   const productSkuCreate = useSelector((state) => state.productSkuCreate)
-  const { success, loading } = productSkuCreate
+  const { success, loading, error } = productSkuCreate
+  const productSkuDelete = useSelector((state) => state.productSkuDelete)
+  const {
+    success: successDelete,
+    loading: loadingDelete,
+    error: errorDelete,
+  } = productSkuDelete
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (success) {
-      dispatch({ type: PRODUCT_CREATE_SKU_RESET })
+    dispatch({ type: PRODUCT_CREATE_SKU_RESET })
+    if (success || successDelete) {
       dispatch(listProductDetails(productId))
       setCreateSkuForm(false)
     }
-  }, [dispatch, success])
+  }, [dispatch, success, successDelete])
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
@@ -67,7 +77,13 @@ const Sku = ({ product, productId }) => {
   }
 
   const createSkuHandler = () => {
-    setCreateSkuForm(true)
+    if (createSkuForm) {
+      setCreateSkuForm(false)
+    } else setCreateSkuForm(true)
+  }
+
+  const deleteSkuHandler = (skuId) => {
+    dispatch(deleteSku(productId, skuId))
   }
   return (
     <>
@@ -82,8 +98,12 @@ const Sku = ({ product, productId }) => {
         </Col>
       </Row>
       <Row>
-        {product.skus.length === 0 ? (
-          <Message variant="primary">No SKUs</Message>
+        {successDelete && <Message variant="success">SKU Deleted</Message>}
+        {errorDelete && <Message variant="danger">{errorDelete}</Message>}
+        {success && <Message variant="success">SKU Created</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loadingDelete ? (
+          <Loader />
         ) : (
           <>
             <Table bordered hover responsive className="table-sm">
@@ -115,7 +135,7 @@ const Sku = ({ product, productId }) => {
                       <Button
                         size="sm"
                         variant="danger"
-                        // onClick={() => deleteSkuHandlerHandler(sku._id)}
+                        onClick={() => deleteSkuHandler(sku._id)}
                       >
                         <i className="fas fa-trash"></i>
                       </Button>
@@ -127,7 +147,7 @@ const Sku = ({ product, productId }) => {
           </>
         )}
       </Row>
-      {success && <Message variant="success">SKU Created</Message>}
+
       {createSkuForm && (
         <FormContainer>
           <h1>Create SKU</h1>
@@ -136,7 +156,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>SKU-ID</Form.Label>
               <Form.Control
                 type="text"
-                value={skuId}
                 onChange={(e) => setSkuId(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -144,7 +163,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                value={name}
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -152,7 +170,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Price</Form.Label>
               <Form.Control
                 type="text"
-                value={price}
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -160,7 +177,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Count In Stock</Form.Label>
               <Form.Control
                 type="text"
-                value={countInStock}
                 onChange={(e) => setCountInStock(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -168,7 +184,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Color</Form.Label>
               <Form.Control
                 type="text"
-                value={color}
                 onChange={(e) => setColor(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -176,7 +191,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Size</Form.Label>
               <Form.Control
                 type="text"
-                value={size}
                 onChange={(e) => setSize(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -184,7 +198,6 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
-                value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
               <Form.File
@@ -196,7 +209,7 @@ const Sku = ({ product, productId }) => {
               {uploading && <Loader />}
             </Form.Group>
             <Button type="submit" variant="primary">
-              Update
+              Save
             </Button>
           </Form>
         </FormContainer>
