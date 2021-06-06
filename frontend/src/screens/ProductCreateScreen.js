@@ -70,6 +70,7 @@ const ProductCreateScreen = ({ match, history }) => {
       brand,
       category,
       image,
+      numSkus: 0,
     }
     dispatch(createProduct(newProduct))
   }

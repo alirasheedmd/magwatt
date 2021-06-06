@@ -156,6 +156,7 @@ const Sku = ({ product, productId }) => {
               <Form.Label>SKU-ID</Form.Label>
               <Form.Control
                 type="text"
+                value={skuId}
                 onChange={(e) => setSkuId(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -163,20 +164,23 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Price</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
+                value={price}
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Count In Stock</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
+                value={countInStock}
                 onChange={(e) => setCountInStock(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -184,6 +188,7 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Color</Form.Label>
               <Form.Control
                 type="text"
+                value={color}
                 onChange={(e) => setColor(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -191,6 +196,7 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Size</Form.Label>
               <Form.Control
                 type="text"
+                value={size}
                 onChange={(e) => setSize(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -198,6 +204,7 @@ const Sku = ({ product, productId }) => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
+                value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
               <Form.File
