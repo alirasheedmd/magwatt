@@ -27,7 +27,7 @@ const ProductScreen = ({ history, match }) => {
   const [rating, setRating] = useState(0)
   const [color, setColor] = useState("")
   const [size, setSize] = useState("")
-  const [image, setImage] = useState(product.image)
+  const [image, setImage] = useState("")
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -52,35 +52,26 @@ const ProductScreen = ({ history, match }) => {
     dispatch(createProductReview(review, match.params.id))
   }
 
-  // const uniqueColor = [...new Set(product.skus.map((sku) => sku.color))] // [ 'A', 'B']
-
-  // const uniqueColorSize = [
-  //   ...new Set(
-  //     product.skus.filter((sku) => sku.color === color).map((sku) => sku.size)
-  //   ),
-  // ]
-
-  const uniqueSize = [...new Set(product.skus.map((sku) => sku.size))] // [ 'A', 'B']
-
+  const uniqueSize = [...new Set(product.skus.map((sku) => sku.size))]
   const uniqueColor = [
     ...new Set(
       product.skus.filter((sku) => sku.size === size).map((sku) => sku.color)
     ),
   ]
 
-  const selectedSkuArray = product.skus.filter(
-    (sku) => sku.color === color && sku.size === size
-  )
-  const selectedSkuObject = (selectedSkuArray, key) => {
-    const initialValue = {}
-    return selectedSkuArray.reduce((obj, item) => {
+  const setColorandUpdateImageHandler = (color) => {
+    const selectedSkuArray = product.skus.filter(
+      (sku) => sku.color === color && sku.size === size
+    )
+    const selectedSkuObject = selectedSkuArray.reduce((obj, item) => {
       return {
         ...obj,
-        [item[key]]: item,
+        selectedSku: item,
       }
-    }, initialValue)
+    }, {})
+    setColor(color)
+    setImage(selectedSkuObject.selectedSku.image)
   }
-  console.log(selectedSkuObject(selectedSkuArray, product.image))
 
   return (
     <>
@@ -96,7 +87,11 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} description={product.description} />
           <Row>
             <Col md={6}>
-              <Image src={image} alt={product.name} fluid />
+              <Image
+                src={!image ? product.image : image}
+                alt={product.name}
+                fluid
+              />
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">
@@ -131,10 +126,12 @@ const ProductScreen = ({ history, match }) => {
                   </Form.Group>
                   {size && (
                     <Form.Group controlId="size">
-                      <Form.Label>Select Size</Form.Label>
+                      <Form.Label>Select Color</Form.Label>
                       <Form.Control
                         as="select"
-                        onChange={(e) => setColor(e.target.value)}
+                        onChange={(e) => {
+                          setColorandUpdateImageHandler(e.target.value)
+                        }}
                       >
                         <option>Select...</option>
                         {uniqueColor.map((color) => (

@@ -175,7 +175,7 @@ const getTopProducts = asyncHandler(async (req, res) => {
 //@access private/ admin
 
 const createSku = asyncHandler(async (req, res) => {
-  const { name, skuId, price, countInStock, color, size, images } = req.body
+  const { name, skuId, price, countInStock, color, size, image } = req.body
 
   const product = await Product.findById(req.params.id)
 
@@ -196,7 +196,7 @@ const createSku = asyncHandler(async (req, res) => {
       countInStock,
       color,
       size,
-      images,
+      image,
     }
     //Now we will push the object we created in the reviews array of the product that we crated
     product.skus.push(sku) //

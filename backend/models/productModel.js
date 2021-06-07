@@ -24,7 +24,7 @@ const skuSchema = mongoose.Schema(
     countInStock: { type: Number, require: true },
     color: { type: String, require: true },
     size: { type: String, require: true },
-    images: { type: String, require: true },
+    image: { type: String, require: true },
   },
   {
     timestamps: true,
