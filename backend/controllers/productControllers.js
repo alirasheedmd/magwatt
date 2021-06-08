@@ -219,13 +219,48 @@ const deleteSku = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   const skuId = req.query.sku
   if (product) {
-    const updatedSkus = product.skus.filter((sku) => sku._id != skuId)
+    const updatedSkus = product.skus.filter((sku) => sku._id === skuId)
     product.skus = updatedSkus
     await product.save()
     res.json({ message: "SKU Removed" })
   } else {
     res.status(404)
     throw new Error("Product not found")
+  }
+})
+
+//@description Update Product
+//@route put /api/products
+//@access private admin
+
+const updateSku = asyncHandler(async (req, res) => {
+  const productId = req.params.id
+  const skuId = req.body.skuId
+  const name = req.body.name
+  const color = req.body.color
+  const size = req.body.size
+  const countInStock = req.body.countInStock
+  const image = req.body.image
+
+  await Product.updateOne(
+    { _id: productId },
+    {
+      $set: {
+        "skus.$[s].name": name,
+        "skus.$[s].color": color,
+        "skus.$[s].size": size,
+        "skus.$[s].countInStock": countInStock,
+      },
+    },
+    { arrayFilters: [{ "s._id": skuId }] }
+  )
+
+  const product = await Product.findById(productId)
+  if (product) {
+    res.json(product)
+  } else {
+    res.status(404)
+    throw new Error("Product not Found")
   }
 })
 
@@ -239,4 +274,5 @@ export {
   getTopProducts,
   createSku,
   deleteSku,
+  updateSku,
 }

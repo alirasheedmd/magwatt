@@ -10,6 +10,7 @@ import {
   getTopProducts,
   createSku,
   deleteSku,
+  updateSku,
 } from "../controllers/productControllers.js"
 import { admin, protect } from "../middleware/authMiddleware.js"
 
@@ -19,6 +20,7 @@ router
   .route("/:id/skus")
   .post(protect, admin, createSku)
   .delete(protect, admin, deleteSku)
+  .put(updateSku)
 router.route("/topratedproducts").get(getTopProducts)
 router
   .route("/:id")

@@ -28,6 +28,8 @@ const ProductScreen = ({ history, match }) => {
   const [color, setColor] = useState("")
   const [size, setSize] = useState("")
   const [image, setImage] = useState("")
+  const [price, setPrice] = useState("")
+  const [countInStock, setCountInStock] = useState(0)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const ProductScreen = ({ history, match }) => {
     ),
   ]
 
-  const setColorandUpdateImageHandler = (color) => {
+  const setColorandUpdateSkuHandler = (color) => {
     const selectedSkuArray = product.skus.filter(
       (sku) => sku.color === color && sku.size === size
     )
@@ -71,6 +73,8 @@ const ProductScreen = ({ history, match }) => {
     }, {})
     setColor(color)
     setImage(selectedSkuObject.selectedSku.image)
+    setPrice(selectedSkuObject.selectedSku.price)
+    setCountInStock(selectedSkuObject.selectedSku.countInStock)
   }
 
   return (
@@ -130,7 +134,7 @@ const ProductScreen = ({ history, match }) => {
                       <Form.Control
                         as="select"
                         onChange={(e) => {
-                          setColorandUpdateImageHandler(e.target.value)
+                          setColorandUpdateSkuHandler(e.target.value)
                         }}
                       >
                         <option>Select...</option>
@@ -152,7 +156,7 @@ const ProductScreen = ({ history, match }) => {
                     <Row>
                       <Col>Price:</Col>
                       <Col>
-                        <strong>${product.price}</strong>
+                        <strong>${!price ? product.price : price}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -160,11 +164,13 @@ const ProductScreen = ({ history, match }) => {
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                        {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                        {countInStock > 0
+                          ? "In Stock"
+                          : "Select Size and Color"}
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                  {product.countInStock > 0 && (
+                  {countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
                         <Col>Qty</Col>
@@ -174,13 +180,11 @@ const ProductScreen = ({ history, match }) => {
                             value={qty}
                             onChange={(e) => setQty(e.target.value)}
                           >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              )
-                            )}
+                            {[...Array(countInStock).keys()].map((x) => (
+                              <option key={x + 1} value={x + 1}>
+                                {x + 1}
+                              </option>
+                            ))}
                           </Form.Control>
                         </Col>
                       </Row>
@@ -191,7 +195,7 @@ const ProductScreen = ({ history, match }) => {
                       onClick={addToCartHandler}
                       className="btn-block"
                       type="button"
-                      disabled={product.countInStock === 0}
+                      disabled={countInStock === 0}
                     >
                       Add to Cart
                     </Button>
