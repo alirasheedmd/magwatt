@@ -1,11 +1,7 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Table, Row, Col } from "react-bootstrap"
-import {
-  createProduct,
-  deleteProduct,
-  listProducts,
-} from "../actions/productAction"
+import { deleteProduct, listProducts } from "../actions/productAction"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { LinkContainer } from "react-router-bootstrap"

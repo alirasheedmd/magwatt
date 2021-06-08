@@ -34,6 +34,10 @@ import {
   PRODUCT_DELETE_SKU_REQUEST,
   PRODUCT_DELETE_SKU_SUCCESS,
   PRODUCT_DELETE_SKU_FAIL,
+  PRODUCT_UPDATE_SKU_REQUEST,
+  PRODUCT_UPDATE_SKU_SUCCESS,
+  PRODUCT_UPDATE_SKU_FAIL,
+  PRODUCT_UPDATE_SKU_RESET,
 } from "../constants/productContants"
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -171,6 +175,20 @@ export const productSkuCreateReducer = (state = {}, action) => {
     case PRODUCT_CREATE_SKU_FAIL:
       return { loading: false, error: action.payload }
     case PRODUCT_CREATE_SKU_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const productSkuUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_UPDATE_SKU_REQUEST:
+      return { loading: true }
+    case PRODUCT_UPDATE_SKU_SUCCESS:
+      return { loading: false, success: true }
+    case PRODUCT_UPDATE_SKU_FAIL:
+      return { loading: false, error: action.payload }
+    case PRODUCT_UPDATE_SKU_RESET:
       return {}
     default:
       return state

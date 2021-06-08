@@ -235,12 +235,13 @@ const deleteSku = asyncHandler(async (req, res) => {
 
 const updateSku = asyncHandler(async (req, res) => {
   const productId = req.params.id
-  const skuId = req.body.skuId
+  const skuId = req.body.skuEditId
   const name = req.body.name
   const color = req.body.color
   const size = req.body.size
   const countInStock = req.body.countInStock
   const image = req.body.image
+  const price = req.body.price
 
   await Product.updateOne(
     { _id: productId },
@@ -250,6 +251,8 @@ const updateSku = asyncHandler(async (req, res) => {
         "skus.$[s].color": color,
         "skus.$[s].size": size,
         "skus.$[s].countInStock": countInStock,
+        "skus.$[s].image": image,
+        "skus.$[s].price": price,
       },
     },
     { arrayFilters: [{ "s._id": skuId }] }

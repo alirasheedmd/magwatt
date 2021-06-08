@@ -293,6 +293,40 @@ export const createProductSku = (sku, id) => async (dispatch, getState) => {
     })
   }
 }
+export const updateProductSku = (sku, id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_SKU_REQUEST }) //first the action will fire off the request reducer
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.put(`/api/products/${id}/skus`, sku, config)
+
+    dispatch({
+      type: PRODUCT_CREATE_SKU_SUCCESS,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_CREATE_SKU_FAIL,
+      payload: message,
+    })
+  }
+}
 
 export const deleteSku = (id, skuId) => async (dispatch, getState) => {
   try {

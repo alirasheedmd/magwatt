@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Form, Button, Table, Row, Col } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import { LinkContainer } from "react-router-bootstrap"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
@@ -9,9 +8,13 @@ import {
   createProductSku,
   deleteSku,
   listProductDetails,
+  updateProductSku,
 } from "../actions/productAction"
 import axios from "axios"
-import { PRODUCT_CREATE_SKU_RESET } from "../constants/productContants"
+import {
+  PRODUCT_CREATE_SKU_RESET,
+  PRODUCT_UPDATE_SKU_RESET,
+} from "../constants/productContants"
 
 const Sku = ({ product, productId }) => {
   const [skuId, setSkuId] = useState("")
@@ -23,9 +26,17 @@ const Sku = ({ product, productId }) => {
   const [uploading, setUploading] = useState("")
   const [countInStock, setCountInStock] = useState("")
   const [createSkuForm, setCreateSkuForm] = useState(false)
+  const [editSkuForm, setEditSkuForm] = useState(false)
+  const [skuEditId, setSkuEditId] = useState("")
 
   const productSkuCreate = useSelector((state) => state.productSkuCreate)
   const { success, loading, error } = productSkuCreate
+  const productSkuUpdate = useSelector((state) => state.productSkuUpdate)
+  const {
+    success: successUpdate,
+    loading: loadingUpdate,
+    error: errorUpdate,
+  } = productSkuUpdate
   const productSkuDelete = useSelector((state) => state.productSkuDelete)
   const {
     success: successDelete,
@@ -36,11 +47,13 @@ const Sku = ({ product, productId }) => {
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_SKU_RESET })
-    if (success || successDelete) {
+    dispatch({ type: PRODUCT_UPDATE_SKU_RESET })
+    if (success || successDelete || successUpdate) {
       dispatch(listProductDetails(productId))
       setCreateSkuForm(false)
+      setEditSkuForm(false)
     }
-  }, [dispatch, success, successDelete])
+  }, [dispatch, success, successDelete, successUpdate, productId])
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
@@ -64,22 +77,50 @@ const Sku = ({ product, productId }) => {
   }
   const submitHandler = (e) => {
     e.preventDefault()
-    const createSku = {
-      skuId,
-      name,
-      price,
-      countInStock,
-      color,
-      size,
-      image,
+    if (createSkuForm) {
+      const createSku = {
+        skuId,
+        name,
+        price,
+        countInStock,
+        color,
+        size,
+        image,
+      }
+      dispatch(createProductSku(createSku, productId))
+    } else {
+      const editSku = {
+        skuEditId,
+        skuId,
+        name,
+        price,
+        countInStock,
+        color,
+        size,
+        image,
+      }
+      dispatch(updateProductSku(editSku, productId))
     }
-    dispatch(createProductSku(createSku, productId))
   }
 
   const createSkuHandler = () => {
     if (createSkuForm) {
       setCreateSkuForm(false)
     } else setCreateSkuForm(true)
+  }
+
+  const skuEditHandler = (skuId) => {
+    const findSku = product.skus.filter((sku) => sku._id === skuId)
+    const sku = { ...findSku[0] }
+    setName(sku.name)
+    setSkuId(sku.skuId)
+    setPrice(sku.price)
+    setCountInStock(sku.countInStock)
+    setImage(sku.image)
+    setColor(sku.color)
+    setSize(sku.size)
+    setEditSkuForm(true)
+    setSkuEditId(skuId)
   }
 
   const deleteSkuHandler = (skuId) => {
@@ -99,10 +140,12 @@ const Sku = ({ product, productId }) => {
       </Row>
       <Row>
         {successDelete && <Message variant="success">SKU Deleted</Message>}
+        {successUpdate && <Message variant="success">SKU Updated</Message>}
         {errorDelete && <Message variant="danger">{errorDelete}</Message>}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {success && <Message variant="success">SKU Created</Message>}
         {error && <Message variant="danger">{error}</Message>}
-        {loadingDelete ? (
+        {loadingDelete || loadingUpdate || loading ? (
           <Loader />
         ) : (
           <>
@@ -127,11 +170,13 @@ const Sku = ({ product, productId }) => {
                     <td>{sku.color}</td>
                     <td>{sku.size}</td>
                     <td>
-                      <LinkContainer to={``}>
-                        <Button variant="light" className="btn-sm">
-                          <i className="fas fa-edit"></i>
-                        </Button>
-                      </LinkContainer>
+                      <Button
+                        variant="light"
+                        className="btn-sm"
+                        onClick={() => skuEditHandler(sku._id)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </Button>
                       <Button
                         size="sm"
                         variant="danger"
@@ -148,9 +193,9 @@ const Sku = ({ product, productId }) => {
         )}
       </Row>
 
-      {createSkuForm && (
+      {createSkuForm || editSkuForm ? (
         <FormContainer>
-          <h1>Create SKU</h1>
+          <h1>{createSkuForm ? "Create Sku" : "Edit Sku"}</h1>
           <Form onSubmit={submitHandler}>
             <Form.Group>
               <Form.Label>SKU-ID</Form.Label>
@@ -216,11 +261,11 @@ const Sku = ({ product, productId }) => {
               {uploading && <Loader />}
             </Form.Group>
             <Button type="submit" variant="primary">
-              Save
+              {createSkuForm ? "Save" : "Update"}
             </Button>
           </Form>
         </FormContainer>
-      )}
+      ) : null}
     </>
   )
 }
