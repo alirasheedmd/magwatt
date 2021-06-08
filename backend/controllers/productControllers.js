@@ -41,20 +41,18 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
-
+  const { name, price, description, image, brand, category, numSkus } = req.body
+  console.log(name)
   if (product) {
-    product.name = req.body.name || product.name
-    product.brand = req.body.brand || product.brand
-    product.category = req.body.category || product.category
-    product.price = req.body.price || product.price
-    product.image = req.body.image || product.image
-    product.description = req.body.description || product.description
-    product.rating = req.body.rating || product.rating
-    product.numReviews = req.body.numReviews || product.numReviews
-    product.numSkus = req.body.numSkus || product.numSkus
+    product.name = name
+    product.brand = brand
+    product.category = category
+    product.price = price
+    product.image = image
+    product.description = description
+    product.numSkus = numSkus
 
     const updatedProduct = await product.save() // after we save user in database it will return the updateduser so we will save it to a variable.
-
     res.json(updatedProduct)
   } else {
     res.status(404)

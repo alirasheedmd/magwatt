@@ -29,6 +29,9 @@ import {
   PRODUCT_DELETE_SKU_REQUEST,
   PRODUCT_DELETE_SKU_SUCCESS,
   PRODUCT_DELETE_SKU_FAIL,
+  PRODUCT_UPDATE_SKU_REQUEST,
+  PRODUCT_UPDATE_SKU_SUCCESS,
+  PRODUCT_UPDATE_SKU_FAIL,
 } from "../constants/productContants"
 import axios from "axios"
 import { logout } from "../actions/userActions"
@@ -295,7 +298,7 @@ export const createProductSku = (sku, id) => async (dispatch, getState) => {
 }
 export const updateProductSku = (sku, id) => async (dispatch, getState) => {
   try {
-    dispatch({ type: PRODUCT_CREATE_SKU_REQUEST }) //first the action will fire off the request reducer
+    dispatch({ type: PRODUCT_UPDATE_SKU_REQUEST }) //first the action will fire off the request reducer
 
     const {
       userLogin: { userInfo },
@@ -311,7 +314,7 @@ export const updateProductSku = (sku, id) => async (dispatch, getState) => {
     await axios.put(`/api/products/${id}/skus`, sku, config)
 
     dispatch({
-      type: PRODUCT_CREATE_SKU_SUCCESS,
+      type: PRODUCT_UPDATE_SKU_SUCCESS,
     })
   } catch (error) {
     const message =
@@ -322,7 +325,7 @@ export const updateProductSku = (sku, id) => async (dispatch, getState) => {
       dispatch(logout())
     }
     dispatch({
-      type: PRODUCT_CREATE_SKU_FAIL,
+      type: PRODUCT_UPDATE_SKU_FAIL,
       payload: message,
     })
   }

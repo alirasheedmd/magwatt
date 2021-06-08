@@ -89,6 +89,7 @@ const ProductEditScreen = ({ match, history }) => {
       image,
       numSkus,
     }
+    console.log(updatedProduct)
     dispatch(updateProduct(updatedProduct, productId))
   }
 
@@ -153,7 +154,7 @@ const ProductEditScreen = ({ match, history }) => {
               <Form.Label>Category</Form.Label>
               <Form.Control
                 as="select"
-                value="Watches"
+                value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {createCategoryList(categories).map((category) => (
