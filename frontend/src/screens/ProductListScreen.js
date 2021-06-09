@@ -44,6 +44,16 @@ const ProductListScreen = ({ history, match }) => {
     <>
       <Row className="align-items-center">
         <Col>
+          <h1>Categories</h1>
+        </Col>
+        <Col className="text-right">
+          <LinkContainer to={`/admin/category/create`}>
+            <Button variant="primary">Create Categories</Button>
+          </LinkContainer>
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Col>
           <h1>Products</h1>
         </Col>
         <Col className="text-right">
