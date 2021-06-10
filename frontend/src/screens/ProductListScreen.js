@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Table, Row, Col } from "react-bootstrap"
 import { deleteProduct, listProducts } from "../actions/productAction"
@@ -7,8 +7,25 @@ import Message from "../components/Message"
 import { LinkContainer } from "react-router-bootstrap"
 import { PRODUCT_CREATE_RESET } from "../constants/productContants"
 import Paginate from "../components/Paginate"
+import CheckboxTree from "react-checkbox-tree"
+import Modal from "react-modal"
+import {
+  IoIosCheckboxOutline,
+  IoIosCheckbox,
+  IoIosArrowDroprightCircle,
+  IoIosArrowDropdown,
+  IoIosCheckmarkCircleOutline,
+  IoIosArrowDropright,
+  IoIosArrowForward,
+  IoIosArrowDown,
+  IoIosAdd,
+} from "react-icons/io"
+import "react-checkbox-tree/lib/react-checkbox-tree.css"
 
 const ProductListScreen = ({ history, match }) => {
+  const [checked, setChecked] = useState([])
+  const [expanded, setExpanded] = useState([])
+
   const pageNumber = match.params.pageNumber || 1
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -46,14 +63,12 @@ const ProductListScreen = ({ history, match }) => {
   const renderCategories = (categories) => {
     const myCategories = []
     categories.map((category) => {
-      myCategories.push(
-        <li key={category._id}>
-          {category.name}
-          {category.children.length > 0 ? (
-            <ul>{renderCategories(category.children)}</ul>
-          ) : null}
-        </li>
-      )
+      myCategories.push({
+        label: category.name,
+        value: category._id,
+        children:
+          category.children.length > 0 && renderCategories(category.children),
+      })
     })
     return myCategories
   }
@@ -72,7 +87,25 @@ const ProductListScreen = ({ history, match }) => {
       </Row>
       <Row>
         <Col>
-          <ul>{renderCategories(categories)}</ul>
+          <CheckboxTree
+            nodes={renderCategories(categories)}
+            checked={checked}
+            expanded={expanded}
+            onCheck={(checked) => setChecked(checked)}
+            onExpand={(expanded) => setExpanded(expanded)}
+            icons={{
+              check: <IoIosCheckbox />,
+              uncheck: <IoIosCheckboxOutline />,
+              halfCheck: <IoIosCheckmarkCircleOutline />,
+              expandClose: <IoIosArrowDroprightCircle />,
+              expandOpen: <IoIosArrowDropdown />,
+              expandAll: <IoIosArrowDropdown />,
+              collapseAll: <IoIosArrowDropright />,
+              parentClose: <IoIosArrowForward />,
+              parentOpen: <IoIosArrowDown />,
+              leaf: <IoIosAdd />,
+            }}
+          />
         </Col>
       </Row>
       <Row className="align-items-center">
