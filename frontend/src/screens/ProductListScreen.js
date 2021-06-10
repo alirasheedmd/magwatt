@@ -20,6 +20,9 @@ const ProductListScreen = ({ history, match }) => {
     error: errorDelete,
   } = productDelete
 
+  const categoryList = useSelector((state) => state.categoryList)
+  const { categories } = categoryList
+
   const dispatch = useDispatch()
 
   const productList = useSelector((state) => state.productList)
@@ -40,6 +43,21 @@ const ProductListScreen = ({ history, match }) => {
     }
   }
 
+  const renderCategories = (categories) => {
+    const myCategories = []
+    categories.map((category) => {
+      myCategories.push(
+        <li key={category._id}>
+          {category.name}
+          {category.children.length > 0 ? (
+            <ul>{renderCategories(category.children)}</ul>
+          ) : null}
+        </li>
+      )
+    })
+    return myCategories
+  }
+
   return (
     <>
       <Row className="align-items-center">
@@ -50,6 +68,11 @@ const ProductListScreen = ({ history, match }) => {
           <LinkContainer to={`/admin/category/create`}>
             <Button variant="primary">Create Categories</Button>
           </LinkContainer>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <ul>{renderCategories(categories)}</ul>
         </Col>
       </Row>
       <Row className="align-items-center">

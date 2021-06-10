@@ -28,7 +28,7 @@ const createCategories = (categories, parentId = null) => {
 // admin only
 
 const createCategory = asyncHandler(async (req, res) => {
-  const { name, parentId } = req.body
+  const { subCategory: name, parentCategory: parentId } = req.body
 
   const categoryObj = {
     name,

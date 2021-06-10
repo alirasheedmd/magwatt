@@ -29,11 +29,11 @@ export const listCategories = () => async (dispatch) => {
   }
 }
 
-export const createCategories = () => async (dispatch) => {
+export const createCategory = (category) => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_CREATE_REQUEST }) //first the action will fire off the request reducer
 
-    await axios.post(`/api/category`)
+    await axios.post(`/api/category`, category)
 
     dispatch({
       type: CATEGORY_CREATE_SUCCESS, // this will fill in the payload with the fetched product data.
