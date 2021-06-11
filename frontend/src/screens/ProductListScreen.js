@@ -4,11 +4,13 @@ import { Button, Table, Row, Col } from "react-bootstrap"
 import { deleteProduct, listProducts } from "../actions/productAction"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import CategoryAdd from "../components/CategoryAdd"
 import { LinkContainer } from "react-router-bootstrap"
 import { PRODUCT_CREATE_RESET } from "../constants/productContants"
 import Paginate from "../components/Paginate"
 import CheckboxTree from "react-checkbox-tree"
 import Modal from "react-modal"
+
 import {
   IoIosCheckboxOutline,
   IoIosCheckbox,
@@ -21,10 +23,14 @@ import {
   IoIosAdd,
 } from "react-icons/io"
 import "react-checkbox-tree/lib/react-checkbox-tree.css"
+import { listCategories } from "../actions/categoryActions"
 
 const ProductListScreen = ({ history, match }) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false)
   const [checked, setChecked] = useState([])
   const [expanded, setExpanded] = useState([])
+  const [expandedArray, setExpandedArray] = useState([])
+  const [checkedArray, setCheckArray] = useState([])
 
   const pageNumber = match.params.pageNumber || 1
   const userLogin = useSelector((state) => state.userLogin)
@@ -45,14 +51,18 @@ const ProductListScreen = ({ history, match }) => {
   const productList = useSelector((state) => state.productList)
   const { loading, error, products, page, pages } = productList
 
+  const categoryCreate = useSelector((state) => state.categoryCreate)
+  const { success } = categoryCreate
+
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
     if (!userInfo.isAdmin) {
       history.push("/login")
     } else {
+      dispatch(listCategories())
       dispatch(listProducts("", pageNumber))
     }
-  }, [dispatch, history, userInfo, successDelete, pageNumber])
+  }, [dispatch, history, userInfo, successDelete, pageNumber, success])
 
   const deleteProductHandler = (id) => {
     if (window.confirm("Are you sure?")) {
@@ -80,9 +90,16 @@ const ProductListScreen = ({ history, match }) => {
           <h1>Categories</h1>
         </Col>
         <Col className="text-right">
-          <LinkContainer to={`/admin/category/create`}>
-            <Button variant="primary">Create Categories</Button>
-          </LinkContainer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setModalIsOpen(true)
+            }}
+          >
+            Create Categories
+          </Button>
+
+          <Button variant="secondary">Edit Categories</Button>
         </Col>
       </Row>
       <Row>
@@ -167,6 +184,14 @@ const ProductListScreen = ({ history, match }) => {
           <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
+      <Modal
+        isOpen={modalIsOpen & !success}
+        onRequestClose={() => {
+          setModalIsOpen(false)
+        }}
+      >
+        <CategoryAdd />
+      </Modal>
     </>
   )
 }

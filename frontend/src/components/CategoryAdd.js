@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { Button, Col, Form, Row } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
-import FormContainer from "../components/FormContainer"
+import FormContainer from "./FormContainer"
 import { createCategory } from "../actions/categoryActions"
 import { useHistory } from "react-router"
 import { CATEGORY_CREATE_RESET } from "../constants/categoryConstants"
 
-const CategoryAddScreen = () => {
+const CategoryAdd = () => {
   const categoryList = useSelector((state) => state.categoryList)
   const { categories } = categoryList
 
@@ -17,7 +17,7 @@ const CategoryAddScreen = () => {
   const history = useHistory()
 
   const [parentCategory, setParentCategory] = useState("")
-  console.log(parentCategory)
+
   const [subCategory, setSubCategory] = useState("")
 
   const createCategoryList = (categories, options = []) => {
@@ -31,11 +31,10 @@ const CategoryAddScreen = () => {
   }
 
   useEffect(() => {
-    dispatch({ type: CATEGORY_CREATE_RESET })
     if (success) {
-      history.push("/admin/productlist")
+      dispatch({ type: CATEGORY_CREATE_RESET })
     }
-  }, [success, history])
+  }, [dispatch])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -47,7 +46,7 @@ const CategoryAddScreen = () => {
   return (
     <div>
       <Row>
-        <Col>
+        <Col className="text-center">
           <h1>Add Category</h1>
         </Col>
       </Row>
@@ -62,7 +61,7 @@ const CategoryAddScreen = () => {
                   value={parentCategory}
                   onChange={(e) => setParentCategory(e.target.value)}
                 >
-                  <option>Select...</option>
+                  <option>Select</option>
                   {createCategoryList(categories).map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.name}
@@ -89,4 +88,4 @@ const CategoryAddScreen = () => {
   )
 }
 
-export default CategoryAddScreen
+export default CategoryAdd
