@@ -154,3 +154,9 @@ h2 {
 #fluid {
   width: 92vw;
 }
+
+@media (max-width: 800px) {
+  #menu-header {
+    display: none;
+  }
+}
