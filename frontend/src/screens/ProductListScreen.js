@@ -26,7 +26,8 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css"
 import { listCategories } from "../actions/categoryActions"
 
 const ProductListScreen = ({ history, match }) => {
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [addCategoryModalIsOpen, setAddCategoryModalIsOpen] = useState(false)
+  const [editCategoryModalIsOpen, setEditCategoryModalIsOpen] = useState(false)
   const [checked, setChecked] = useState([])
   const [expanded, setExpanded] = useState([])
   const [expandedArray, setExpandedArray] = useState([])
@@ -52,7 +53,7 @@ const ProductListScreen = ({ history, match }) => {
   const { loading, error, products, page, pages } = productList
 
   const categoryCreate = useSelector((state) => state.categoryCreate)
-  const { success } = categoryCreate
+  const { success: addCategorySuccess } = categoryCreate
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
@@ -62,7 +63,14 @@ const ProductListScreen = ({ history, match }) => {
       dispatch(listCategories())
       dispatch(listProducts("", pageNumber))
     }
-  }, [dispatch, history, userInfo, successDelete, pageNumber, success])
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successDelete,
+    pageNumber,
+    addCategorySuccess,
+  ])
 
   const deleteProductHandler = (id) => {
     if (window.confirm("Are you sure?")) {
@@ -93,13 +101,20 @@ const ProductListScreen = ({ history, match }) => {
           <Button
             variant="secondary"
             onClick={() => {
-              setModalIsOpen(true)
+              setAddCategoryModalIsOpen(true)
             }}
           >
             Create Categories
           </Button>
 
-          <Button variant="secondary">Edit Categories</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setEditCategoryModalIsOpen(true)
+            }}
+          >
+            Edit Categories
+          </Button>
         </Col>
       </Row>
       <Row>
@@ -185,12 +200,20 @@ const ProductListScreen = ({ history, match }) => {
         </>
       )}
       <Modal
-        isOpen={modalIsOpen & !success}
+        isOpen={addCategoryModalIsOpen & !addCategorySuccess}
         onRequestClose={() => {
-          setModalIsOpen(false)
+          setAddCategoryModalIsOpen(false)
         }}
       >
         <CategoryAdd />
+      </Modal>
+      <Modal
+        isOpen={editCategoryModalIsOpen}
+        onRequestClose={() => {
+          setEditCategoryModalIsOpen(false)
+        }}
+      >
+        <h1>Edit Category</h1>
       </Modal>
     </>
   )
