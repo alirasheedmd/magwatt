@@ -91,6 +91,10 @@ const ProductListScreen = ({ history, match }) => {
     return myCategories
   }
 
+  const updateCategoryHandler = () => {
+    setEditCategoryModalIsOpen(true)
+  }
+
   return (
     <>
       <Row className="align-items-center">
@@ -107,12 +111,7 @@ const ProductListScreen = ({ history, match }) => {
             Create Categories
           </Button>
 
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setEditCategoryModalIsOpen(true)
-            }}
-          >
+          <Button variant="secondary" onClick={updateCategoryHandler}>
             Edit Categories
           </Button>
         </Col>
