@@ -212,7 +212,7 @@ const ProductListScreen = ({ history, match }) => {
           setEditCategoryModalIsOpen(false)
         }}
       >
-        <h1>Edit Category</h1>
+        <h1>Edit the Category</h1>
       </Modal>
     </>
   )
